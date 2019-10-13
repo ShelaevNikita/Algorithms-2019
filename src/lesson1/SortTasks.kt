@@ -113,7 +113,8 @@ fun sortAddresses(inputName: String, outputName: String) {
         for (adress in listAdress) street += adress.split(" ")[0]
         for (str in street.sorted()) {
             val numberList = mutableSetOf<Int>()
-            for (line in listAdress) if (str == line.split(" ")[0])
+            for (line in listAdress)
+                if (str == line.split(" ")[0])
                 numberList += line.split(" ")[1].toInt()
             for (number in numberList.sorted()) {
                 val adress = "$str $number"
@@ -123,7 +124,7 @@ fun sortAddresses(inputName: String, outputName: String) {
                 }
                 val nameString = StringBuilder()
                 val sort = listNames.sorted()
-                sort.indices.forEach { x ->
+                for (x in sort.indices) {
                     nameString.append(sort[x])
                     if (x != sort.size - 1) nameString.append(", ")
                 }

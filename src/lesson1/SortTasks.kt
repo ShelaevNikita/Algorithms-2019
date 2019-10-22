@@ -37,34 +37,34 @@ import java.io.File
 
 fun sortTimes(inputName: String, outputName: String) {
     /**
-     * Ресурсоёмкость: O(2 * N);
-     * Трудоёмкость: O(2 * N + sorted) = 0(N * logN)
+     * Ресурсоёмкость: O(2 * N) = O(N);
+     * Трудоёмкость: O(N * logN)
      */
     val listsort = mutableListOf<Int>()
     val timeMap = mutableMapOf<Int, String>()
     try {
-        val result = File(outputName).bufferedWriter()
         val file = File(inputName).bufferedReader().readLines()
-        for (line in file) {
-            val element = line.split(" ")
-            val timelist = element[0].split(":")
-            var hours = timelist[0].toInt()
-            val minutes = timelist[1].toInt()
-            val seconds = timelist[2].toInt()
-            require(!((hours !in 1..12) || (minutes !in 0..59) || (seconds !in 0..59))) { "Неверный формат времени" }
-            if (hours == 12) hours -= 12
-            if (element[1] == "PM") hours += 12
-            val time = hours * 3600 + minutes * 60 + seconds
-            listsort += time
-            timeMap += Pair(time, line)
+        File(outputName).bufferedWriter().use {
+            for (line in file) {
+                val element = line.split(" ")
+                val timelist = element[0].split(":")
+                var hours = timelist[0].toInt()
+                val minutes = timelist[1].toInt()
+                val seconds = timelist[2].toInt()
+                require(!((hours !in 1..12) || (minutes !in 0..59) || (seconds !in 0..59))) { "Неверный формат времени" }
+                if (hours == 12) hours = 0
+                if (element[1] == "PM") hours += 12
+                val time = hours * 3600 + minutes * 60 + seconds
+                listsort += time
+                timeMap += Pair(time, line)
+            }
+            for (time in listsort.sorted()) {
+                it.write(timeMap[time]!!)
+                it.newLine()
+            }
         }
-        for (time in listsort.sorted()) {
-            result.write(timeMap[time]!!)
-            result.newLine()
-        }
-        result.close()
-    } catch (e: Exception) {
-        throw IllegalArgumentException("Неверный формат")
+    } catch (e: NumberFormatException) {
+        throw NumberFormatException("Неверный формат")
     }
 }
 
@@ -96,31 +96,34 @@ fun sortTimes(inputName: String, outputName: String) {
  */
 fun sortAddresses(inputName: String, outputName: String) {
     /**
-     * Ресурсоёмкость: O(3 * N);
+     * Ресурсоёмкость: O(3 * N) = O(N);
      * Трудоёмкость: O(N ^ 2)
      */
-    val listAdress = mutableSetOf<String>()
     val listMap = mutableListOf<Pair<String, String>>()
+    val addresses = mutableSetOf<Pair<String, Int>>()
     try {
         val file = File(inputName).bufferedReader().readLines()
-        val result = File(outputName).bufferedWriter()
-        for (line in file) {
-            val para = line.split(" - ")
-            listAdress += para[1]
-            listMap += Pair(para[0], para[1])
-        }
-        val street = mutableSetOf<String>()
-        for (adress in listAdress) street += adress.split(" ")[0]
-        for (str in street.sorted()) {
-            val numberList = mutableSetOf<Int>()
-            for (line in listAdress)
-                if (str == line.split(" ")[0])
-                numberList += line.split(" ")[1].toInt()
-            for (number in numberList.sorted()) {
-                val adress = "$str $number"
+        File(outputName).bufferedWriter().use {
+            for (line in file) {
+                val para = line.split(" - ")
+                listMap += Pair(para[0], para[1])
+                val number = para[1].split(" ")
+                addresses += Pair(number[0], number[1].toInt())
+            }
+            val addressSort = addresses.sortedWith(Comparator { p1, p2 ->
+                when {
+                    p1.first > p2.first -> 1
+                    ((p1.first == p2.first) && (p1.second > p2.second)) -> 1
+                    ((p1.first == p2.first) && (p1.second == p2.second)) -> 0
+                    ((p1.first == p2.first) && (p1.second < p2.second)) -> -1
+                    else -> -1
+                }
+            })
+            for (address in addressSort) {
+                val address1 = "${address.first} ${address.second}"
                 val listNames = mutableListOf<String>()
                 for ((name, adr) in listMap) {
-                    if (adr == adress) listNames += name
+                    if (adr == address1) listNames += name
                 }
                 val nameString = StringBuilder()
                 val sort = listNames.sorted()
@@ -128,13 +131,12 @@ fun sortAddresses(inputName: String, outputName: String) {
                     nameString.append(sort[x])
                     if (x != sort.size - 1) nameString.append(", ")
                 }
-                result.write("$adress - $nameString")
-                result.newLine()
+                it.write("$address1 - $nameString")
+                it.newLine()
             }
         }
-        result.close()
-    } catch (e: Exception) {
-        throw IllegalArgumentException("Неверный формат")
+    } catch (e: NumberFormatException) {
+        throw NumberFormatException("Неверный формат")
     }
 }
 
@@ -171,24 +173,31 @@ fun sortAddresses(inputName: String, outputName: String) {
 fun sortTemperatures(inputName: String, outputName: String) {
     /**
      * Ресурсоёмкость: O(N);
-     * Трудоёмкость: O(2 * N + sorted) = O(N * logN)
+     * Трудоёмкость: O(N * logN)
      */
-    val list = mutableListOf<Double>()
+    val map = mutableMapOf<Double, Int>()
     try {
         val file = File(inputName).bufferedReader().readLines()
-        val result = File(outputName).bufferedWriter()
-        for (line in file) {
-            val temp = line.toDouble()
-            require(temp in -273.0..500.0) { "Перебор" }
-            list += temp
+        File(outputName).bufferedWriter().use {
+            for (line in file) {
+                val temp = line.toDouble()
+                require(temp in -273.0..500.0) { "Перебор" }
+                if (temp in map.keys) {
+                    val h = map[temp]!! + 1
+                    map[temp] = h
+                } else map[temp] = 1
+            }
+            while (map.isNotEmpty()) {
+                val min = map.keys.min()!!
+                for (x in 1..map[min]!!) {
+                    it.write(min.toString())
+                    it.newLine()
+                }
+                map.remove(min)
+            }
         }
-        for (temp in list.sorted()) {
-            result.write(temp.toString())
-            result.newLine()
-        }
-        result.close()
-    } catch (e: Exception) {
-        throw IllegalArgumentException("Неверный формат")
+    } catch (e: NumberFormatException) {
+        throw NumberFormatException("Неверный формат")
     }
 }
 
@@ -223,47 +232,39 @@ fun sortTemperatures(inputName: String, outputName: String) {
  */
 fun sortSequence(inputName: String, outputName: String) {
     /**
-     * Ресурсоёмкость: O(2 * N);
-     * Трудоёмкость: O(N ^ 2)
+     * Ресурсоёмкость: O(N);
+     * Трудоёмкость: O(N)
      */
     val listMap = mutableMapOf<Int, Int>()
     val list = mutableListOf<Int>()
     try {
         val file = File(inputName).bufferedReader().readLines()
-        val result = File(outputName).bufferedWriter()
-        for (line in file) {
-            val number = line.toInt()
-            list += number
-        }
-        for (x in 0 until list.size) {
-            val first = list[x]
-            if (first !in listMap.keys) {
-                var t = 0
-                for (y in 0 until list.size)
-                    if (first == list[y]) t++
-                listMap += Pair(first, t)
+        File(outputName).bufferedWriter().use {
+            for (element in file) {
+                val first = element.toInt()
+                list += first
+                if (first in listMap.keys) {
+                    val t = listMap[first]!! + 1
+                    listMap[first] = t
+                } else listMap[first] = 1
+            }
+            val max = listMap.values.max() ?: 0
+            var maxPair = Pair(Int.MAX_VALUE, 0)
+            for ((first, second) in listMap)
+                if ((second == max) && (first <= maxPair.first))
+                    maxPair = Pair(first, max)
+            for (line in list)
+                if (line != maxPair.first) {
+                    it.write(line.toString())
+                    it.newLine()
+                }
+            for (n in 0 until maxPair.second) {
+                it.write(maxPair.first.toString())
+                it.newLine()
             }
         }
-        val max = listMap.values.max() ?: 0
-        var maxPair = Pair(0, 0)
-        var second = Int.MAX_VALUE
-        for ((first, t) in listMap)
-            if ((t == max) && (first <= second)) {
-                second = first
-                maxPair = Pair(second, max)
-            }
-        for (line in list)
-            if (line != maxPair.first) {
-                result.write(line.toString())
-                result.newLine()
-            }
-        for (n in 0 until maxPair.second) {
-            result.write(maxPair.first.toString())
-            result.newLine()
-        }
-        result.close()
-    } catch (e: Exception) {
-        throw IllegalArgumentException("Неверный формат")
+    } catch (e: NumberFormatException) {
+        throw NumberFormatException("Неверный формат")
     }
 }
 
@@ -284,7 +285,7 @@ fun sortSequence(inputName: String, outputName: String) {
 fun <T : Comparable<T>> mergeArrays(first: Array<T>, second: Array<T?>) {
     /**
      * Ресурсоёмкость: O(S);
-     * Трудоёмкость: O(2 * S)
+     * Трудоёмкость: O(S)
      */
     val list = mutableListOf<T>()
     val size = second.size

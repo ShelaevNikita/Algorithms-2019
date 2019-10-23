@@ -123,9 +123,8 @@ fun sortAddresses(inputName: String, outputName: String) {
             for (address in addressSort) {
                 val address1 = "${address.first} ${address.second}"
                 val listNames = mutableListOf<String>()
-                for ((name, adr) in listMap) {
+                for ((name, adr) in listMap)
                     if (adr == address1) listNames += name
-                }
                 val nameString = StringBuilder()
                 val sort = listNames.sorted()
                 for (x in sort.indices) {

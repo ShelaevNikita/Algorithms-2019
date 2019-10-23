@@ -7,6 +7,7 @@ import java.io.IOException
 import java.util.*
 import kotlin.math.log
 import kotlin.math.pow
+
 /**
  * Получение наибольшей прибыли (она же -- поиск максимального подмассива)
  * Простая

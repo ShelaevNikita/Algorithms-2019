@@ -45,9 +45,8 @@ fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
         for (string in file)
             list += string.toInt()
         val delta = mutableListOf<Int>()
-        for (string in list.indices) {
+        for (string in list.indices)
             if (string != list.size - 1) delta += list[string + 1] - list[string]
-        }
         var y = 0
         for (x in 0 until delta.size) {
             val change = max
@@ -56,12 +55,11 @@ fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
             if (change != max) y = x + 1
             sum = maxOf(sum, 0)
         }
-        for (x in 0 until list.size) {
+        for (x in 0 until list.size)
             if (list[y] - list[x] == max) {
                 result = Pair(x + 1, y + 1)
                 break
             }
-        }
         return result
     } catch (e: NumberFormatException) {
         throw NumberFormatException("Неверный формат")
@@ -159,7 +157,7 @@ fun josephTask(menNumber: Int, choiceInterval: Int): Int {
  */
 fun longestCommonSubstring(first: String, second: String): String {
     /**
-     * Ресурсоёмкость: O(3 * S) = O(S);
+     * Ресурсоёмкость: O(2 * S) = O(S);
      * Трудоёмкость: O(F * S)
      */
     val listResult = MutableList(second.length) { 0 }
@@ -167,15 +165,12 @@ fun longestCommonSubstring(first: String, second: String): String {
     var max = 0
     for (char1 in first.indices) {
         val listSecond = listResult.toList()
-        val list = mutableListOf<Int>()
         val check = max
-        for (char2 in second)
-            list += if (first[char1] == char2) 1 else 0
-        for (element in 0 until list.size)
-            if (list[element] == 1)
-                if (element >= 1)
-                    listResult[element] = listSecond[element - 1] + 1 else listResult[element] = 1
-            else listResult[element] = 0
+        for (char2 in second.indices)
+            if ((first[char1] == second[char2]))
+                if (char2 >= 1) listResult[char2] = listSecond[char2 - 1] + 1
+                else listResult[char2] = 1
+            else listResult[char2] = 0
         max = maxOf(max, listResult.max()!!)
         if (check != max) index = char1 + 1
     }
@@ -199,7 +194,8 @@ fun calcPrimesNumber(limit: Int): Int {
      */
     if (limit <= 1) return 0
     val set = mutableSetOf<Int>()
-    for (x in 2..limit) {
+    set += 2
+    for (x in 3..limit step 2) {
         var number = 0
         for (element in set) {
             if (element * element - 1 > x) {
@@ -252,7 +248,9 @@ fun baldaSearcher(inputName: String, words: Set<String>): Set<String> {
         for (lines in file.indices) {
             val list = mutableListOf<Char>()
             for (char in file[lines].indices) {
-                require(!((file[lines][char].isDigit()) || (file[lines][char].isLowerCase()))) { "Только прописные буквы" }
+                require(
+                    !((file[lines][char].isDigit()) || (file[lines][char].isLowerCase()))
+                ) { "Только прописные буквы" }
                 if (file[lines][char] != ' ') list += file[lines][char]
             }
             matrix += list
@@ -273,7 +271,8 @@ fun baldaSearcher(inputName: String, words: Set<String>): Set<String> {
                         visited += Pair(x, y)
                         map += Pair(1, 1)
                         while (queue.isNotEmpty()) {
-                            require(!((word[number].isDigit()) || (word[number].isLowerCase()))) { "Только прописные буквы" }
+                            require(!((word[number].isDigit()) || (word[number].isLowerCase())))
+                            { "Только прописные буквы" }
                             var f = 0
                             val next = queue.poll()
                             visited += next

@@ -51,7 +51,8 @@ fun sortTimes(inputName: String, outputName: String) {
                 var hours = timelist[0].toInt()
                 val minutes = timelist[1].toInt()
                 val seconds = timelist[2].toInt()
-                require(!((hours !in 1..12) || (minutes !in 0..59) || (seconds !in 0..59))) { "Неверный формат времени" }
+                require(!((hours !in 1..12) || (minutes !in 0..59) || (seconds !in 0..59)))
+                { "Неверный формат времени" }
                 if (hours == 12) hours = 0
                 if (element[1] == "PM") hours += 12
                 val time = hours * 3600 + minutes * 60 + seconds
@@ -292,14 +293,11 @@ fun <T : Comparable<T>> mergeArrays(first: Array<T>, second: Array<T?>) {
     var li = 0
     var ri = first.size
     for (i in 0 until size) {
-        if (li < first.size && (ri == size || first[li] <= second[ri]!!)) {
+        if (li < first.size && (ri == size || first[li] <= second[ri]!!))
             list.add(first[li++])
-        } else {
-            list.add(second[ri++]!!)
-        }
+        else list.add(second[ri++]!!)
     }
-    for (element in 0 until list.size) {
+    for (element in 0 until list.size)
         second[element] = list[element]
-    }
 }
 

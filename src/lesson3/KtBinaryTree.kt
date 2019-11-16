@@ -232,7 +232,7 @@ open class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableS
      * Ресурсоёмкость: O(1)
      */
     override fun subSet(fromElement: T, toElement: T): SortedSet<T> {
-        require(fromElement <= toElement) { "Неверный интервал" }
+        require(fromElement < toElement) { "Неверный интервал" }
         return CreateSubSet(this, fromElement, toElement)
     }
 

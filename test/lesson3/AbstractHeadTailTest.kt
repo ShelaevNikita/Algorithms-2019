@@ -163,6 +163,8 @@ abstract class AbstractHeadTailTest {
 
     protected fun doSubSetRelationTest() {
         val set: SortedSet<Int> = tree.subSet(2, 15)
+        assertFailsWith<IllegalArgumentException> { tree.subSet(2, 2) }
+        assertFailsWith<IllegalArgumentException> { tree.subSet(3, 1) }
         assertEquals(9, set.size)
         assertEquals(10, tree.size)
         tree.add(11)

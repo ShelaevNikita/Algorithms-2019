@@ -7,6 +7,7 @@ class Trie : AbstractMutableSet<String>(), MutableSet<String> {
 
     private class Node {
         val children: MutableMap<Char, Node> = linkedMapOf()
+        var parent: Node? = null
     }
 
     private var root = Node()
@@ -39,6 +40,7 @@ class Trie : AbstractMutableSet<String>(), MutableSet<String> {
             } else {
                 modified = true
                 val newChild = Node()
+                newChild.parent = current
                 current.children[char] = newChild
                 current = newChild
             }
@@ -121,7 +123,7 @@ class Trie : AbstractMutableSet<String>(), MutableSet<String> {
                 }
             }
             nextString.delete(0, nextString.length - 1)
-            return null
+            return find(node.parent)
         }
     }
 }

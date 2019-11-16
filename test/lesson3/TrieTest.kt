@@ -19,7 +19,7 @@ class TrieTest {
         trie.add("zyx")
         trie.add("zwv")
         trie.add("zyt")
-        trie.add("abcde")
+        trie.addAll(listOf("zyt", "abcde"))
         assertEquals(5, trie.size)
         assertTrue("abcdefg" in trie)
         assertFalse("abcdef" in trie)
@@ -27,6 +27,7 @@ class TrieTest {
         assertTrue("zyx" in trie)
         assertTrue("zyt" in trie)
         assertTrue("zwv" in trie)
+        assertTrue(trie.containsAll(setOf("abcdefg", "zyx", "zwv", "zyt", "abcde")))
         assertFalse("zy" in trie)
         assertFalse("zv" in trie)
         trie.remove("zwv")
@@ -51,6 +52,7 @@ class TrieTest {
         trie.add("zwv")
         trie.add("zyt")
         trie.add("abcde")
+        trie.add("abcde")
         assertEquals(5, trie.size)
         assertTrue("abcdefg" in trie)
         assertFalse("abcdef" in trie)
@@ -61,7 +63,9 @@ class TrieTest {
         assertFalse("zy" in trie)
         assertFalse("zv" in trie)
         trie.remove("zy")
-        assertEquals(5, trie.size)
+        trie.remove("abcdefg")
+        assertEquals(4, trie.size)
+        trie.add("abcdefg")
         val iterator = trie.iterator()
         iterator.next()
         iterator.remove()
@@ -72,6 +76,9 @@ class TrieTest {
         iterator.next()
         iterator.remove()
         assertEquals(1, trie.size)
+        iterator.next()
+        iterator.remove()
+        assertEquals(0, trie.size)
     }
 
     @Test
@@ -97,5 +104,10 @@ class TrieTest {
         iterator.next()
         iterator.remove()
         assertEquals(1, trie.size)
+        iterator.next()
+        iterator.remove()
+        assertEquals(0, trie.size)
+        assertEquals(false, iterator.hasNext())
+        assertFailsWith<NotImplementedError> { iterator.next() }
     }
 }

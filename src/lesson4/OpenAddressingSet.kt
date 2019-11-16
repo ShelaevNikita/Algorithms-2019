@@ -97,7 +97,7 @@ class OpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T>(
          *  Трудоёмкость: O(capacity)
          */
         override fun next(): T {
-            requireNotNull(next)
+            if (!hasNext()) throw NotImplementedError()
             now = next
             nowIndex = nextIndex
             next = findNext()

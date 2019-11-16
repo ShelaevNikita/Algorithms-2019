@@ -79,7 +79,7 @@ class OpenAddressingSetTest {
         iterator.remove()
         assertEquals(0, set.size)
         assertEquals(false, iterator.hasNext())
-        assertFailsWith<IllegalArgumentException> { iterator.next() }
+        assertFailsWith<NotImplementedError> { iterator.next() }
         assertFalse(set.contains("Alpha"))
         assertFalse(set.contains("Beta"))
         assertFalse(set.contains("Omega"))

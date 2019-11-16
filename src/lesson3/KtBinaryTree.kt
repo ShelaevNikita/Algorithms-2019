@@ -130,9 +130,10 @@ open class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableS
     }
 
     override fun containsAll(elements: Collection<T>): Boolean {
+        var change = true
         for (element in elements)
-            contains(element)
-        return true
+            change = contains(element)
+        return change
     }
 
     override fun toString(): String {
@@ -141,6 +142,7 @@ open class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableS
             string.append(element)
             string.append(", ")
         }
+        string.delete(string.length - 2, string.length)
         return string.toString()
     }
 

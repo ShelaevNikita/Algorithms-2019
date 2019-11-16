@@ -8,7 +8,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class BinaryTreeTest {
-    private fun testAdd(create: () -> CheckableSortedSet<Int>) {
+    private fun testTree(create: () -> CheckableSortedSet<Int>) {
         val tree = create()
         assertEquals(0, tree.size)
         assertFalse(tree.contains(5))
@@ -24,27 +24,53 @@ class BinaryTreeTest {
         tree.add(4)
         assertEquals(6, tree.size)
         assertFalse(tree.contains(8))
-        tree.add(8)
-        tree.add(15)
-        tree.add(15)
-        tree.add(20)
+        tree.addAll(listOf(8, 15, 15, 20))
         assertEquals(9, tree.size)
         assertTrue(tree.contains(8))
         assertTrue(tree.checkInvariant())
         assertEquals(1, tree.first())
         assertEquals(20, tree.last())
+        tree.removeAll(listOf(8, 15, 20))
+        assertFalse(tree.containsAll(listOf(8, 15, 20)))
+        assertEquals(1, tree.first())
+        assertEquals(10, tree.last())
+
+        val binary = KtBinaryTree<Int>()
+        binary.add(10)
+        binary.add(5)
+        binary.add(7)
+        binary.add(10)
+        assertEquals(3, binary.size)
+        assertTrue(binary.contains(5))
+        binary.add(3)
+        binary.add(1)
+        binary.add(3)
+        binary.add(4)
+        assertEquals(6, binary.size)
+        assertFalse(binary.contains(8))
+        binary.addAll(listOf(8, 15, 15, 20))
+        assertEquals(setOf(10, 5, 7, 3, 1, 4, 8, 15, 20), binary)
+        assertEquals("1, 3, 4, 5, 7, 8, 10, 15, 20", binary.toString())
+        assertEquals(9, binary.size)
+        assertTrue(binary.contains(8))
+        assertTrue(binary.checkInvariant())
+        assertEquals(1, binary.first())
+        assertEquals(20, binary.last())
+        binary.removeAll(listOf(8, 15, 20))
+        assertEquals(setOf(10, 5, 7, 3, 1, 4), binary)
+        assertFalse(binary.containsAll(listOf(8, 15, 20)))
     }
 
     @Test
     @Tag("Example")
     fun testAddKotlin() {
-        testAdd { createKotlinTree() }
+        testTree { createKotlinTree() }
     }
 
     @Test
     @Tag("Example")
     fun testAddJava() {
-        testAdd { createJavaTree() }
+        testTree { createJavaTree() }
     }
 
     private fun <T : Comparable<T>> createJavaTree(): CheckableSortedSet<T> = BinaryTree()
@@ -85,7 +111,7 @@ class BinaryTreeTest {
             val list2 = listOf(50, 12, 19, 80, 75, 92, 45, 1, 8, 65, 40, 75)
             val remove = 50
             assertFalse(binarySet1.remove(42))
-            for (element in list2) binarySet1.add(element)
+            binarySet1.addAll(list2)
             assertTrue(binarySet1.remove(remove))
             for (element in list2) {
                 val inn = element != remove
@@ -175,10 +201,10 @@ class BinaryTreeTest {
 
     private fun testIteratorRemove(create: () -> CheckableSortedSet<Int>) {
         val random = Random()
-        for (iteration in 1..100) {
+        for (iteration in 1..1000) {
             val list = mutableListOf<Int>()
-            for (i in 1..20) {
-                list.add(random.nextInt(100))
+            for (i in 1..2000) {
+                list.add(random.nextInt(1000))
             }
             val treeSet = TreeSet<Int>()
             val binarySet = create()
@@ -220,7 +246,7 @@ class BinaryTreeTest {
         for (iteration in 1..1000) {
             val list = mutableListOf<Int>()
             for (i in 1..20000) {
-                list.add(random1.nextInt(100000))
+                list.add(random1.nextInt(10000))
             }
             val treeSet = TreeSet<Int>()
             val binarySet = create()

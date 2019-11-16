@@ -19,7 +19,7 @@ class Trie : AbstractMutableSet<String>(), MutableSet<String> {
 
     private fun String.withZero() = this + 0.toChar()
 
-    private fun findNode(element: String): Node? {
+    private fun findNextNode(element: String): Node? {
         var current = root
         for (char in element) {
             current = current.children[char] ?: return null
@@ -28,7 +28,14 @@ class Trie : AbstractMutableSet<String>(), MutableSet<String> {
     }
 
     override fun contains(element: String): Boolean =
-        findNode(element.withZero()) != null
+        findNextNode(element.withZero()) != null
+
+    override fun containsAll(elements: Collection<String>): Boolean {
+        var change = true
+        for (element in elements)
+            change = contains(element)
+        return change
+    }
 
     override fun add(element: String): Boolean {
         var current = root
@@ -51,8 +58,25 @@ class Trie : AbstractMutableSet<String>(), MutableSet<String> {
         return modified
     }
 
+    override fun toString(): String {
+        val string = StringBuilder()
+        for (element in this) {
+            string.append(element)
+            string.append("; ")
+        }
+        string.delete(string.length - 2, string.length)
+        return string.toString()
+    }
+
+
+    override fun addAll(elements: Collection<String>): Boolean {
+        for (element in elements)
+            add(element)
+        return true
+    }
+
     override fun remove(element: String): Boolean {
-        val current = findNode(element) ?: return false
+        val current = findNextNode(element) ?: return false
         return removeNode(current)
     }
 
@@ -62,6 +86,12 @@ class Trie : AbstractMutableSet<String>(), MutableSet<String> {
             return true
         }
         return false
+    }
+
+    override fun removeAll(elements: Collection<String>): Boolean {
+        for (element in elements)
+            remove(element)
+        return true
     }
 
     /**
@@ -80,7 +110,7 @@ class Trie : AbstractMutableSet<String>(), MutableSet<String> {
 
         private var visited = mutableSetOf<Node>()
 
-        private var nextNode: Node? = find(root)
+        private var nextNode: Node? = findNextNode(root)
 
         /**
          *  Ресурсоёмкость: O(1)
@@ -95,8 +125,9 @@ class Trie : AbstractMutableSet<String>(), MutableSet<String> {
          *  Трудоёмкость: O(N)
          */
         override fun next(): String {
+            if (!hasNext()) throw NotImplementedError()
             currentNode = nextNode
-            nextNode = find(nextNode)
+            nextNode = findNextNode(nextNode)
             return nextString.toString()
         }
 
@@ -110,7 +141,7 @@ class Trie : AbstractMutableSet<String>(), MutableSet<String> {
             currentNode = null
         }
 
-        private fun find(node: Node?): Node? {
+        private fun findNextNode(node: Node?): Node? {
             requireNotNull(node)
             if (node !in visited) {
                 visited.add(node)
@@ -119,11 +150,12 @@ class Trie : AbstractMutableSet<String>(), MutableSet<String> {
             for ((char, child) in node.children) {
                 if ((char != 0.toChar()) && (child !in visited)) {
                     nextString.append(char)
-                    return find(child)
+                    return findNextNode(child)
                 }
             }
-            nextString.delete(0, nextString.length - 1)
-            return find(node.parent)
+            if (node == root) return null
+            nextString.delete(0, nextString.length)
+            return findNextNode(node.parent)
         }
     }
 }

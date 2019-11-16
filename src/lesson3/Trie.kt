@@ -1,6 +1,7 @@
 package lesson3
 
 class Trie : AbstractMutableSet<String>(), MutableSet<String> {
+
     override var size: Int = 0
         private set
 
@@ -50,6 +51,10 @@ class Trie : AbstractMutableSet<String>(), MutableSet<String> {
 
     override fun remove(element: String): Boolean {
         val current = findNode(element) ?: return false
+        return removeNode(current)
+    }
+
+    private fun removeNode(current: Node): Boolean {
         if (current.children.remove(0.toChar()) != null) {
             size--
             return true
@@ -62,6 +67,61 @@ class Trie : AbstractMutableSet<String>(), MutableSet<String> {
      * Сложная
      */
     override fun iterator(): MutableIterator<String> {
-        TODO()
+        return TrieIterator()
+    }
+
+    private inner class TrieIterator internal constructor() : MutableIterator<String> {
+
+        private var nextString = StringBuilder()
+
+        private var currentNode: Node? = null
+
+        private var visited = mutableSetOf<Node>()
+
+        private var nextNode: Node? = find(root)
+
+        /**
+         *  Ресурсоёмкость: O(1)
+         *  Трудоёмкость: O(1)
+         */
+        override fun hasNext(): Boolean {
+            return nextNode != null
+        }
+
+        /**
+         *  Ресурсоёмкость: O(word.lenght)
+         *  Трудоёмкость: O(N)
+         */
+        override fun next(): String {
+            currentNode = nextNode
+            nextNode = find(nextNode)
+            return nextString.toString()
+        }
+
+        /**
+         *  Ресурсоёмкость: O(1)
+         *  Трудоёмкость: O(1)
+         */
+        override fun remove() {
+            requireNotNull(currentNode)
+            removeNode(currentNode!!)
+            currentNode = null
+        }
+
+        private fun find(node: Node?): Node? {
+            requireNotNull(node)
+            if (node !in visited) {
+                visited.add(node)
+                if (node.children.containsKey(0.toChar())) return node
+            }
+            for ((char, child) in node.children) {
+                if ((char != 0.toChar()) && (child !in visited)) {
+                    nextString.append(char)
+                    return find(child)
+                }
+            }
+            nextString.delete(0, nextString.length - 1)
+            return null
+        }
     }
 }

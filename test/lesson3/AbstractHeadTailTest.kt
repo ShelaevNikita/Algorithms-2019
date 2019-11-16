@@ -89,6 +89,18 @@ abstract class AbstractHeadTailTest {
         assertFailsWith<IllegalArgumentException> { set.add(8) }
         assertEquals(8, set.size)
         assertEquals(13, tree.size)
+        assertFailsWith<IllegalArgumentException> { set.remove(7) }
+        tree.remove(3)
+        assertFalse(set.contains(3))
+        set.remove(-2)
+        assertFalse(tree.contains(-2))
+        assertEquals(6, set.size)
+        assertEquals(11, tree.size)
+        tree.addAll(listOf(75, 84, 7, 3, -2, -1))
+        assertTrue(set.containsAll(listOf(-1, -2, 3)))
+        assertFalse(set.contains(75))
+        assertFalse(set.contains(84))
+        assertFalse(set.contains(7))
     }
 
     protected fun doTailSetRelationTest() {
@@ -104,6 +116,17 @@ abstract class AbstractHeadTailTest {
         assertFailsWith<IllegalArgumentException> { set.add(-2) }
         assertEquals(9, set.size)
         assertEquals(13, tree.size)
+        assertFailsWith<IllegalArgumentException> { set.remove(1) }
+        tree.remove(12)
+        assertFalse(set.contains(12))
+        set.remove(42)
+        assertFalse(tree.contains(42))
+        assertEquals(7, set.size)
+        assertEquals(11, tree.size)
+        tree.addAll(listOf(75, 84, 0, 14, 15, -1))
+        assertTrue(set.containsAll(listOf(75, 84, 14, 15)))
+        assertFalse(set.contains(0))
+        assertFalse(set.contains(-1))
     }
 
     protected fun doSubSetTest() {
@@ -121,11 +144,13 @@ abstract class AbstractHeadTailTest {
 
         assertFailsWith<IllegalArgumentException> { smallSet.add(2) }
         assertFailsWith<IllegalArgumentException> { smallSet.add(9) }
+        assertFailsWith<IllegalArgumentException> { smallSet.remove(9) }
+        assertFailsWith<IllegalArgumentException> { smallSet.remove(1) }
 
-        val allSet = tree.subSet(-128, 128)
+        val allSet = tree.subSet(1, 11)
         for (i in 1..10)
             assertEquals(true, allSet.contains(i))
-
+        assertEquals(false, allSet.contains(11))
         val random = Random()
         val toElement = random.nextInt(randomTreeSize) + 1
         val fromElement = random.nextInt(toElement - 1) + 1
@@ -152,6 +177,18 @@ abstract class AbstractHeadTailTest {
         assertFailsWith<IllegalArgumentException> { set.add(20) }
         assertEquals(11, set.size)
         assertEquals(14, tree.size)
+        assertFailsWith<IllegalArgumentException> { set.remove(1) }
+        tree.remove(11)
+        assertFalse(set.contains(11))
+        set.remove(14)
+        assertFalse(tree.contains(14))
+        assertEquals(9, set.size)
+        assertEquals(12, tree.size)
+        tree.addAll(listOf(5, 6, 9, 10, 75, 84, 0, 2, 4, 7, 14, 15))
+        assertTrue(set.containsAll(listOf(5, 6, 9, 10, 0, 2, 4, 14, 7)))
+        tree.removeAll(listOf(9, 10, 75, 2, 4, 14))
+        assertTrue(set.containsAll(listOf(5, 6, 0, 7)))
+        assertFalse(set.contains(14))
     }
 
 }

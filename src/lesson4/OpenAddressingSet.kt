@@ -1,6 +1,8 @@
 package lesson4
 
+@Suppress("UNCHECKED_CAST")
 class OpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T>() {
+
     init {
         require(bits in 2..31)
     }
@@ -33,9 +35,7 @@ class OpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T>(
         var index = startingIndex
         var current = storage[index]
         while (current != null) {
-            if (current == element) {
-                return false
-            }
+            if (current == element) return false
             index = (index + 1) % capacity
             check(index != startingIndex) { "Table is full" }
             current = storage[index]
@@ -47,15 +47,85 @@ class OpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T>(
 
     /**
      * Для этой задачи пока нет тестов, но вы можете попробовать привести решение и добавить к нему тесты
+     *
+     * Ресурсоёмкость: O(1)
+     * Трудоёмкость: O(capacity)
      */
     override fun remove(element: T): Boolean {
-        TODO("not implemented")
+        val startingIndex = element.startingIndex()
+        var index = startingIndex
+        var current = storage[index]
+        while (current != null) {
+            if (current == element) {
+                storage[index] = 0
+                size--
+            }
+            index = (index + 1) % capacity
+            if (index == startingIndex) return false
+            current = storage[index]
+        }
+        return true
     }
 
     /**
      * Для этой задачи пока нет тестов, но вы можете попробовать привести решение и добавить к нему тесты
      */
     override fun iterator(): MutableIterator<T> {
-        TODO("not implemented")
+        return OpenAddressingSetIterator()
+    }
+
+    private inner class OpenAddressingSetIterator internal constructor() : MutableIterator<T> {
+
+        private var nextIndex = 0
+
+        private var nowIndex = 0
+
+        private var now: T? = null
+
+        private var next: T? = findNext()
+
+        /**
+         *  Ресурсоёмкость: O(1)
+         *  Трудоёмкость: O(1)
+         */
+        override fun hasNext(): Boolean {
+            return next != null
+        }
+
+        /**
+         *  Ресурсоёмкость: O(1)
+         *  Трудоёмкость: O(capacity)
+         */
+        override fun next(): T {
+            requireNotNull(next)
+            now = next
+            nowIndex = nextIndex
+            next = findNext()
+            return now!!
+        }
+
+        /**
+         *  Ресурсоёмкость: O(1)
+         *  Трудоёмкость: O(1)
+         */
+        override fun remove() {
+            requireNotNull(now)
+            storage[nowIndex] = 0
+            size--
+            now = null
+        }
+
+        private fun findNext(): T? {
+            if (size == 0) return null
+            else {
+                var current: Any?
+                do {
+                    nextIndex++
+                    if (nextIndex == capacity) return null
+                    current = storage[nextIndex]
+                } while (current == null || current == 0)
+                return current as T?
+            }
+        }
     }
 }

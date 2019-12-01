@@ -2,6 +2,8 @@
 
 package lesson5
 
+import lesson5.impl.GraphBuilder
+import java.util.*
 /**
  * Эйлеров цикл.
  * Средняя
@@ -59,9 +61,41 @@ fun Graph.findEulerLoop(): List<Graph.Edge> {
  * E    F    I
  * |
  * J ------------ K
+ *
+ * Трудоёмкость: O(Vertex);
+ * Ресурсоёмкость: O(Vertex + Edge)
  */
 fun Graph.minimumSpanningTree(): Graph {
-    TODO()
+    if (vertices.isEmpty()) return GraphBuilder().build()
+    val vertexSet = mutableSetOf<Graph.Vertex>()
+    val edgeList = mutableListOf<Graph.Edge>()
+    val vertexRandom = vertices.random()
+    vertexSet += vertexRandom
+
+    fun connect(vertex: Graph.Vertex) {
+        for ((ver, edge) in getConnections(vertex)) {
+            if (ver !in vertexSet) {
+                vertexSet += ver
+                edgeList += edge
+                connect(ver)
+            }
+        }
+    }
+
+    connect(vertexRandom)
+    return GraphBuilder().apply {
+        addVertex(vertexRandom.name)
+        if (edgeList[0].begin == vertexRandom)
+            for (edges in edgeList) {
+                addVertex(edges.end.name)
+                addConnection(edges.begin, edges.end)
+            }
+        else
+            for (edges in edgeList) {
+                addVertex(edges.begin.name)
+                addConnection(edges.begin, edges.end)
+            }
+    }.build()
 }
 
 /**
@@ -113,7 +147,27 @@ fun Graph.largestIndependentVertexSet(): Set<Graph.Vertex> {
  * J ------------ K
  *
  * Ответ: A, E, J, K, D, C, H, G, B, F, I
+ *
+ * Трудоёмкость: O(queue * Neighbors), в худшем случае: O(Vertex * Edge * maxLenght);
+ * Ресурсоёмкость: O(queue) ~= O(Edge * maxLenght)
  */
 fun Graph.longestSimplePath(): Path {
-    TODO()
+    var maxLenght = -1
+    var longestPath = Path()
+    val queue = ArrayDeque<Path>()
+    for (vertex in vertices)
+        queue.add(Path(vertex))
+    while (queue.isNotEmpty()) {
+        val path = queue.poll()
+        if (path.length > maxLenght) {
+            maxLenght = path.length
+            longestPath = path
+            if (maxLenght == vertices.size) break
+        }
+        for (next in getNeighbors(path.vertices.last())) {
+            if (next !in path)
+                queue.add(Path(path, this, next))
+        }
+    }
+    return longestPath
 }

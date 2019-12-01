@@ -1,5 +1,6 @@
 package lesson6
 
+import java.io.File
 import kotlin.test.assertEquals
 
 abstract class AbstractDynamicTests {
@@ -35,6 +36,15 @@ abstract class AbstractDynamicTests {
                 """.trimIndent()
             ).length, "Answer must have length of $expectedLength2"
         )
+        assertEquals("ABEKA", longestCommonSubSequence("ABDEFFEKABCD", "GABCEKEEA"))
+        assertEquals("HARBR", longestCommonSubSequence("HABRAHABR", "HARBOUR"))
+        assertEquals(
+            File("input/longestCommonSubSequence_Answer.txt").readText().trim(),
+            longestCommonSubSequence(
+                File("input/longestCommonSubSequence_1.txt").readText(),
+                File("input/longestCommonSubSequence_2.txt").readText()
+            ).trim()
+        )
     }
 
     fun longestIncreasingSubSequence(longestIncreasingSubSequence: (List<Int>) -> List<Int>) {
@@ -53,6 +63,21 @@ abstract class AbstractDynamicTests {
                     23, 76, 34, 93, 123, 21, 56, 87, 91, 12, 45, 98, 140, 12, 5, 38, 349, 65, 94,
                     45, 76, 15, 99, 100, 88, 84, 35, 88
                 )
+            )
+        )
+        assertEquals(
+            listOf(3, 6, 7, 8, 9, 10), lesson6.longestIncreasingSubSequence(
+                listOf(3, 6, 5, 4, 7, 8, 9, 8, 7, 6, 8, 1, 0, 4, 7, 10)
+            )
+        )
+        assertEquals(
+            listOf(0, 2, 5, 6, 7, 8, 11), lesson6.longestIncreasingSubSequence(
+                listOf(0, 9, 2, 5, 4, 7, 6, 9, 8, -1, -2, -5, 7, 8, 11, 5, 8, 7, 4, 7)
+            )
+        )
+        assertEquals(
+            listOf(-1, 0, 4, 5, 7, 8, 10), longestIncreasingSubSequence(
+                listOf(-1, 0, -3, -4, -7, -8, 7, 8, 4, 7, 10, 4, 7, 5, 7, 5, 8, 10)
             )
         )
     }

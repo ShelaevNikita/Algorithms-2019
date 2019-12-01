@@ -174,6 +174,48 @@ abstract class AbstractGraphTests {
         val tree3 = graph3.minimumSpanningTree()
         assertEquals(4, tree3.edges.size)
         assertEquals(4, tree3.findBridges().size)
+        // Cross
+        val graph4 = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            val f = addVertex("F")
+            addConnection(a, b)
+            addConnection(b, c)
+            addConnection(c, d)
+            addConnection(d, e)
+            addConnection(e, a)
+            addConnection(e, f)
+            addConnection(f, a)
+            addConnection(f, b)
+            addConnection(d, f)
+        }.build()
+        val tree4 = graph4.minimumSpanningTree()
+        assertEquals(5, tree4.edges.size)
+        assertEquals(5, tree4.findBridges().size)
+        val graph5 = GraphBuilder().apply {
+            val vertices = mutableListOf<Graph.Vertex>()
+            for (i in 0..50) {
+                vertices += addVertex("$i")
+            }
+            for (i in 0..40) {
+                for (j in i + 5..45) {
+                    addConnection(vertices[i], vertices[j - 1])
+                    addConnection(vertices[i], vertices[j])
+                    addConnection(vertices[i], vertices[j + 1])
+                    addConnection(vertices[i], vertices[j - 3])
+                    addConnection(vertices[i], vertices[j - 4])
+                    addConnection(vertices[i + 1], vertices[j - 3])
+                    addConnection(vertices[i + 1], vertices[j - 2])
+                    addConnection(vertices[i + 1], vertices[j])
+                }
+            }
+        }.build()
+        val tree5 = graph5.minimumSpanningTree()
+        assertEquals(46, tree5.edges.size)
+        assertEquals(46, tree5.findBridges().size)
     }
 
     fun largestIndependentVertexSet(largestIndependentVertexSet: Graph.() -> Set<Graph.Vertex>) {
@@ -327,6 +369,44 @@ abstract class AbstractGraphTests {
         }.build()
         val longestPath3 = graph3.longestSimplePath()
         assertEquals(6, longestPath3.length)
+        val graph1 = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            addConnection(a, b)
+            addConnection(b, c)
+            addConnection(c, d)
+            addConnection(d, e)
+            addConnection(e, a)
+        }.build()
+        val longestLoopPath = graph1.longestSimplePath()
+        assertEquals(4, longestLoopPath.length)
+        val disconnected = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            addVertex("D")
+            addConnection(a, b)
+            addConnection(b, c)
+            addConnection(c, a)
+        }.build()
+        val longestPath4 = disconnected.longestSimplePath()
+        assertEquals(2, longestPath4.length)
+        val graph4 = GraphBuilder().apply {
+            val vertices = mutableListOf<Graph.Vertex>()
+            for (i in 0..8) {
+                vertices += addVertex("$i")
+            }
+            for (i in 0..7) {
+                for (j in i + 1..8) {
+                    addConnection(vertices[i], vertices[j])
+                }
+            }
+        }.build()
+        val graph4Path = graph4.longestSimplePath()
+        assertEquals(8, graph4Path.length)
     }
 
 }

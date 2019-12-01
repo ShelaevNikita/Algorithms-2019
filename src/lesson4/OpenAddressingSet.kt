@@ -57,7 +57,7 @@ class OpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T>(
         var current = storage[index]
         while (current != null) {
             if (current == element) {
-                storage[index] = 0
+                storage[index] = null
                 size--
             }
             index = (index + 1) % capacity
@@ -97,7 +97,7 @@ class OpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T>(
          *  Трудоёмкость: O(capacity)
          */
         override fun next(): T {
-            if (!hasNext()) throw NotImplementedError()
+            if (!hasNext()) throw NoSuchElementException()
             now = next
             nowIndex = nextIndex
             next = findNext()
@@ -110,7 +110,7 @@ class OpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T>(
          */
         override fun remove() {
             requireNotNull(now)
-            storage[nowIndex] = 0
+            storage[nowIndex] = null
             size--
             now = null
         }
@@ -123,7 +123,7 @@ class OpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T>(
                     nextIndex++
                     if (nextIndex == capacity) return null
                     current = storage[nextIndex]
-                } while (current == null || current == 0)
+                } while (current == null)
                 return current as T?
             }
         }

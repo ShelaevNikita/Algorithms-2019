@@ -194,7 +194,7 @@ open class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableS
          * Ресурсоёмкость: O(height)
          */
         override fun next(): T {
-            if (!hasNext()) throw NotImplementedError()
+            if (!hasNext()) throw NoSuchElementException()
             var element = stack.pop()
             val result = element
             if (element.right != null) {

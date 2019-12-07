@@ -2,6 +2,9 @@
 
 package lesson6
 
+import java.io.File
+import java.io.IOException
+
 /**
  * Наибольшая общая подпоследовательность.
  * Средняя
@@ -110,9 +113,36 @@ fun longestIncreasingSubSequence(list: List<Int>): List<Int> {
  * Необходимо найти маршрут с минимальным весом и вернуть этот минимальный вес.
  *
  * Здесь ответ 2 + 3 + 4 + 1 + 2 = 12
+ *
+ * Трудоёмкость: O(длина поля * ширина поля);
+ * Ресурсоёмкость: O(длина поля * ширина поля)
  */
 fun shortestPathOnField(inputName: String): Int {
-    TODO()
+    try {
+        val file = File(inputName).bufferedReader().readLines()
+        val matrix = mutableListOf<MutableList<Int>>()
+        for (line in file) {
+            val list = mutableListOf<Int>()
+            for (i in line.indices step 2) {
+                list.add(line[i].toInt() - '0'.toInt())
+            }
+            matrix += list
+        }
+        val length = matrix[0].size
+        val height = matrix.size
+        for (x in 0 until height) {
+            for (y in 0 until length) {
+                val up = if (x != 0) matrix[x - 1][y] else Int.MAX_VALUE
+                val left = if (y != 0) matrix[x][y - 1] else Int.MAX_VALUE
+                val upleft = if ((y != 0) && (x != 0))
+                    matrix[x - 1][y - 1] else Int.MAX_VALUE
+                if ((x != 0) || (y != 0)) matrix[x][y] += minOf(up, left, upleft)
+            }
+        }
+        return matrix[height - 1][length - 1]
+    } catch (e: IOException) {
+        throw IOException()
+    }
 }
 
 // Задачу "Максимальное независимое множество вершин в графе без циклов"

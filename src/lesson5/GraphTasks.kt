@@ -4,6 +4,7 @@ package lesson5
 
 import lesson5.impl.GraphBuilder
 import java.util.*
+
 /**
  * Эйлеров цикл.
  * Средняя
@@ -29,9 +30,70 @@ import java.util.*
  *
  * Справка: Эйлеров цикл -- это цикл, проходящий через все рёбра
  * связного графа ровно по одному разу
+ *
+ * Трудоёмкость: O(Edge);
+ * Ресурсоёмкость: O(Vertex)
  */
 fun Graph.findEulerLoop(): List<Graph.Edge> {
-    TODO()
+    if ((edges.isEmpty()) || (vertices.any { getConnections(it).size % 2 != 0 })
+        || (edges.size < vertices.size - 1)
+    ) return emptyList()
+    val visitedEdge = mutableListOf<Graph.Edge>()
+
+    fun createCycle(vertex: Graph.Vertex): List<Graph.Vertex>? {
+        val cycle = mutableListOf<Graph.Vertex>()
+
+        fun findCycle(startVertex: Graph.Vertex) {
+            for ((neighborVertex, neighborEdge) in getConnections(startVertex)) {
+                if (neighborEdge !in visitedEdge) {
+                    if (neighborVertex != vertex) {
+                        cycle += neighborVertex
+                        visitedEdge += neighborEdge
+                        findCycle(neighborVertex)
+                        break
+                    } else {
+                        cycle += neighborVertex
+                        visitedEdge += neighborEdge
+                        return
+                    }
+                }
+            }
+        }
+
+        findCycle(vertex)
+        if (cycle.size != 1) {
+            val cycles = mutableListOf<List<Graph.Vertex>>()
+            for (ver in cycle) {
+                val cycle2 = createCycle(ver) ?: continue
+                cycles.add(cycle2)
+            }
+            for (rounds in cycles) {
+                if (rounds.isEmpty()) continue
+                val start = rounds[0]
+                var current = cycle[0]
+                for (node in 1 until cycle.size) {
+                    if (current != start) {
+                        current = cycle[node]
+                        continue
+                    } else {
+                        cycle.take(node)
+                        cycle += rounds
+                        break
+                    }
+                }
+            }
+            return cycle
+        } else return null
+    }
+
+    val random = vertices.random()
+    val cycle = createCycle(random)!!.toMutableList()
+    cycle.add(cycle.first())
+    if (cycle.size < vertices.size) return emptyList()
+    val result = mutableListOf<Graph.Edge>()
+    for (vertex in 0 until cycle.size - 1)
+        result.add(getConnection(cycle[vertex], cycle[vertex + 1])!!)
+    return result
 }
 
 /**
@@ -62,7 +124,7 @@ fun Graph.findEulerLoop(): List<Graph.Edge> {
  * |
  * J ------------ K
  *
- * Трудоёмкость: O(Vertex);
+ * Трудоёмкость: O(Vertex * Edge);
  * Ресурсоёмкость: O(Vertex + Edge)
  */
 fun Graph.minimumSpanningTree(): Graph {
@@ -148,21 +210,22 @@ fun Graph.largestIndependentVertexSet(): Set<Graph.Vertex> {
  *
  * Ответ: A, E, J, K, D, C, H, G, B, F, I
  *
- * Трудоёмкость: O(queue * Neighbors), в худшем случае: O(Vertex * Edge * maxLenght);
- * Ресурсоёмкость: O(queue) ~= O(Edge * maxLenght)
+ * maxLength - длина наидлинейшего простого пути
+ * Трудоёмкость: O(maxLength!);
+ * Ресурсоёмкость: O(maxLength!)
  */
 fun Graph.longestSimplePath(): Path {
-    var maxLenght = -1
+    var maxLength = -1
     var longestPath = Path()
     val queue = ArrayDeque<Path>()
     for (vertex in vertices)
         queue.add(Path(vertex))
     while (queue.isNotEmpty()) {
         val path = queue.poll()
-        if (path.length > maxLenght) {
-            maxLenght = path.length
+        if (path.length > maxLength) {
+            maxLength = path.length
             longestPath = path
-            if (maxLenght == vertices.size) break
+            if (maxLength == vertices.size) break
         }
         for (next in getNeighbors(path.vertices.last())) {
             if (next !in path)

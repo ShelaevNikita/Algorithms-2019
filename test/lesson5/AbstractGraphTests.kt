@@ -1,6 +1,7 @@
 package lesson5
 
 import lesson5.impl.GraphBuilder
+import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -114,6 +115,74 @@ abstract class AbstractGraphTests {
         }.build()
         val loop3 = graph3.findEulerLoop()
         loop3.assert(shouldExist = false, graph = graph3)
+        val graph4 = GraphBuilder().apply {
+            val number = 75
+            val vertices = mutableListOf<Graph.Vertex>()
+            for (i in 0 until number)
+                vertices += addVertex("$i")
+            for (i in 0 until number - 1)
+                for (j in i + 1 until number)
+                    addConnection(vertices[i], vertices[j])
+        }.build()
+        val loop4 = graph4.findEulerLoop()
+        loop4.assert(shouldExist = true, graph = graph4)
+        val graph5 = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            val f = addVertex("F")
+            addConnection(a, b)
+            addConnection(b, c)
+            addConnection(c, d)
+            addConnection(d, e)
+            addConnection(e, f)
+            addConnection(f, d)
+            addConnection(d, b)
+            addConnection(b, e)
+            addConnection(e, c)
+            addConnection(c, a)
+        }.build()
+        val loop5 = graph5.findEulerLoop()
+        loop5.assert(shouldExist = true, graph = graph5)
+        val graph6 = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            val f = addVertex("F")
+            addConnection(a, b)
+            addConnection(b, c)
+            addConnection(c, a)
+            addConnection(a, d)
+            addConnection(c, d)
+            addConnection(d, e)
+            addConnection(c, f)
+            addConnection(a, e)
+            addConnection(d, f)
+        }.build()
+        val loop6 = graph6.findEulerLoop()
+        loop6.assert(shouldExist = true, graph = graph6)
+        val graph7 = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            val f = addVertex("F")
+            addConnection(a, b)
+            addConnection(b, c)
+            addConnection(c, a)
+            addConnection(a, d)
+            addConnection(c, d)
+            addConnection(d, e)
+            addConnection(c, f)
+            addConnection(a, e)
+        }.build()
+        val loop7 = graph7.findEulerLoop()
+        loop7.assert(shouldExist = false, graph = graph7)
     }
 
     fun minimumSpanningTree(minimumSpanningTree: Graph.() -> Graph) {
@@ -283,6 +352,45 @@ abstract class AbstractGraphTests {
         assertEquals(
             setOf(cross["A"], cross["B"], cross["C"], cross["D"]),
             cross.largestIndependentVertexSet()
+        )
+        val cross2 = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            addConnection(a, b)
+            addConnection(b, c)
+            addConnection(c, d)
+            addConnection(d, e)
+            addConnection(a, e)
+        }.build()
+        assertThrows<IllegalArgumentException> { cross2.largestIndependentVertexSet() }
+        val cross3 = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            val f = addVertex("F")
+            val g = addVertex("G")
+            val h = addVertex("H")
+            val i = addVertex("I")
+            val j = addVertex("J")
+            addVertex("R")
+            addConnection(a, b)
+            addConnection(a, c)
+            addConnection(b, d)
+            addConnection(c, e)
+            addConnection(c, f)
+            addConnection(b, g)
+            addConnection(d, i)
+            addConnection(g, h)
+            addConnection(h, j)
+        }.build()
+        assertEquals(
+            setOf(cross3["A"], cross3["D"], cross3["E"], cross3["F"], cross3["G"], cross3["J"], cross3["R"]),
+            cross3.largestIndependentVertexSet()
         )
     }
 

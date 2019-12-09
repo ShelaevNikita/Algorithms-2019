@@ -115,31 +115,30 @@ fun longestIncreasingSubSequence(list: List<Int>): List<Int> {
  * Здесь ответ 2 + 3 + 4 + 1 + 2 = 12
  *
  * Трудоёмкость: O(длина поля * ширина поля);
- * Ресурсоёмкость: O(длина поля * ширина поля)
+ * Ресурсоёмкость: O(2 * длина поля) = O(длина поля)
  */
 fun shortestPathOnField(inputName: String): Int {
     try {
-        val file = File(inputName).bufferedReader().readLines()
-        val matrix = mutableListOf<MutableList<Int>>()
-        for (line in file) {
-            val list = mutableListOf<Int>()
-            for (i in line.indices step 2) {
-                list.add(line[i].toInt() - '0'.toInt())
+        File(inputName).bufferedReader().use {
+            val firstLine = it.readLine()
+            val result = mutableListOf<Int>()
+            for (x in firstLine.indices step 2)
+                result += firstLine[x].toInt() - '0'.toInt()
+            for (x in 0 until result.size)
+                if (x != 0) result[x] += result[x - 1]
+            for (line in it.readLines()) {
+                val newList = result.toList()
+                for (i in line.indices step 2)
+                    result[i / 2] = line[i].toInt() - '0'.toInt()
+                for (x in 0 until result.size) {
+                    val up = newList[x]
+                    val left = if (x != 0) result[x - 1] else Int.MAX_VALUE
+                    val upleft = if (x != 0) newList[x - 1] else Int.MAX_VALUE
+                    result[x] += minOf(up, left, upleft)
+                }
             }
-            matrix += list
+            return result.last()
         }
-        val length = matrix[0].size
-        val height = matrix.size
-        for (x in 0 until height) {
-            for (y in 0 until length) {
-                val up = if (x != 0) matrix[x - 1][y] else Int.MAX_VALUE
-                val left = if (y != 0) matrix[x][y - 1] else Int.MAX_VALUE
-                val upleft = if ((y != 0) && (x != 0))
-                    matrix[x - 1][y - 1] else Int.MAX_VALUE
-                if ((x != 0) || (y != 0)) matrix[x][y] += minOf(up, left, upleft)
-            }
-        }
-        return matrix[height - 1][length - 1]
     } catch (e: IOException) {
         throw IOException()
     }

@@ -23,12 +23,17 @@ class HeuristicsKnapsack(
         return result
     }
 
-    private fun Chromosome.otbor(): Int {
+    private fun Chromosome.otbor(): Boolean {
         var list = 0
-        for (x in this.gen.indices)
+        var result = true
+        for (x in this.gen.indices) {
             if (this.gen[x] == 1) list += items[x].weight
-        if (list > load) list = 0 - list
-        return list
+            if (list > load) {
+                result = false
+                break
+            }
+        }
+        return result
     }
 
     private fun Chromosome.evaluation(): Int {
@@ -55,7 +60,7 @@ class HeuristicsKnapsack(
             val crossBreedsAfterMutation =
                 crossBreeds.map { if (random.nextDouble() < 0.1) it.mutate(size, random) else it }
             val chromosomeAfterOtbor =
-                (chromosomes + crossBreedsAfterMutation).filter { it.otbor() > 0 }
+                (chromosomes + crossBreedsAfterMutation).filter { it.otbor() }
             if (chromosomeAfterOtbor.isEmpty()) findTheBest()
             val chromosomeAfterEvaluation =
                 chromosomeAfterOtbor.sortedByDescending { it.evaluation() }

@@ -20,15 +20,15 @@ class HeuristicsTestsKotlin : AbstractHeuristicsTests() {
     @Tag("Impossible")
     fun testFillKnapsackCompareWithGreedyTest2() {
         fillKnapsackCompareWithGreedyTest2 { load, items ->
-            fillKnapsackHeuristics(load, items, 20, 20)
+            fillKnapsackHeuristics(load, items, 500, 500)
         }
     }
 
     @Test
     @Tag("Impossible")
-    fun testFillKnapsackCompareWithGreedyTest3() {
-        fillKnapsackCompareWithGreedyTest3 { load, items ->
-            fillKnapsackHeuristics(load, items, 100, 1000)
+    fun testFillKnapsackCompareWithDinamicTest() {
+        fillKnapsackCompareWithDimanicTest { load, items ->
+            fillKnapsackHeuristics(load, items, 500, 1000)
         }
     }
 

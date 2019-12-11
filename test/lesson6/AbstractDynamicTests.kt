@@ -38,6 +38,29 @@ abstract class AbstractDynamicTests {
         )
         assertEquals("ABEKA", longestCommonSubSequence("ABDEFFEKABCD", "GABCEKEEA"))
         assertEquals("HARBR", longestCommonSubSequence("HABRAHABR", "HARBOUR"))
+        assertEquals(
+            "Как он ме ать н, евноть зуять, ать ть",
+            longestCommonSubSequence(
+                "Как рано мог он лицемерить, Таить надежду, ревновать, Разуверять, заставить верить",
+                "Как он умел казаться новым, Шутя невинность изумлять, Пугать отчаяньем готовым"
+            )
+        )
+        assertEquals(
+            "Ка  осет  рока оо а осно езо",
+            longestCommonSubSequence(
+                "Как взор его был быстр и нежен, Стыдлив и дерзок, а порой Блистал послушною слезой!",
+                "Куда ж поскачет мой проказник? С кого начнет он? Все равно: Везде поспеть немудрено."
+            )
+        )
+        assertEquals(
+            "ет  оол, енны жь авальы акр ый адани уник",
+            longestCommonSubSequence(
+                "Какие сети им готовил! Но вы, блаженные мужья, С ним оставались вы друзья: " +
+                        "Его ласкал супруг лукавый, Фобласа давний ученик",
+                "Театра злой законодатель, Непостоянный обожатель Очаровательных актрис, " +
+                        "Почетный гражданин кулис, Онегин полетел к театру"
+            )
+        )
     }
 
     fun longestIncreasingSubSequence(longestIncreasingSubSequence: (List<Int>) -> List<Int>) {

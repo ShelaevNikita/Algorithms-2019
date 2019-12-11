@@ -38,13 +38,6 @@ abstract class AbstractDynamicTests {
         )
         assertEquals("ABEKA", longestCommonSubSequence("ABDEFFEKABCD", "GABCEKEEA"))
         assertEquals("HARBR", longestCommonSubSequence("HABRAHABR", "HARBOUR"))
-        assertEquals(
-            File("input/longestCommonSubSequence_Answer.txt").readText().trim(),
-            longestCommonSubSequence(
-                File("input/longestCommonSubSequence_1.txt").readText(),
-                File("input/longestCommonSubSequence_2.txt").readText()
-            ).trim()
-        )
     }
 
     fun longestIncreasingSubSequence(longestIncreasingSubSequence: (List<Int>) -> List<Int>) {

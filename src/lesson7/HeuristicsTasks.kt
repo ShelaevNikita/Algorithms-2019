@@ -6,6 +6,7 @@ import lesson5.Graph
 import lesson5.Path
 import lesson6.knapsack.Fill
 import lesson6.knapsack.Item
+import lesson7.geneticKnapsack.HeuristicsKnapsack
 
 // Примечание: в этом уроке достаточно решить одну задачу
 
@@ -18,10 +19,15 @@ import lesson6.knapsack.Item
  *
  * Используйте parameters для передачи дополнительных параметров алгоритма
  * (не забудьте изменить тесты так, чтобы они передавали эти параметры)
+ *
+ * Если я не ошибаюсь, то:
+ * Трудоёмкость: O(items.size * chromosomeNumber * generationNumber);
+ * Ресурсоёмкость: O(items.size * chromosomeNumber)
  */
-fun fillKnapsackHeuristics(load: Int, items: List<Item>, vararg parameters: Any): Fill {
-    TODO()
-}
+fun fillKnapsackHeuristics(
+    load: Int, items: List<Item>,
+    chromosomeNumber: Int, generationNumber: Int
+): Fill = HeuristicsKnapsack(load, items, chromosomeNumber, generationNumber).findTheBest()
 
 /**
  * Решить задачу коммивояжёра (см. урок 5) методом колонии муравьёв

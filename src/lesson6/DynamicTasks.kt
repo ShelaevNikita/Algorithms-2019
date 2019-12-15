@@ -122,14 +122,16 @@ fun shortestPathOnField(inputName: String): Int {
         File(inputName).bufferedReader().use {
             val firstLine = it.readLine()
             val result = mutableListOf<Int>()
-            for (x in firstLine.indices step 2)
-                result += firstLine[x].toInt() - '0'.toInt()
+            val firstLineList = firstLine.split(' ')
+            for (element in firstLineList)
+                result += element.toInt()
             for (x in 0 until result.size)
                 if (x != 0) result[x] += result[x - 1]
             for (line in it.readLines()) {
                 val newList = result.toList()
-                for (i in line.indices step 2)
-                    result[i / 2] = line[i].toInt() - '0'.toInt()
+                val lineList = line.split(' ')
+                for (x in lineList.indices)
+                    result[x] = lineList[x].toInt()
                 for (x in 0 until result.size) {
                     val up = newList[x]
                     val left = if (x != 0) result[x - 1] else Int.MAX_VALUE
@@ -140,7 +142,7 @@ fun shortestPathOnField(inputName: String): Int {
             return result.last()
         }
     } catch (e: IOException) {
-        throw IOException()
+        throw IOException("Неверное имя файла")
     }
 }
 

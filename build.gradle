@@ -72,13 +72,13 @@ task kotoedRun(
         dependsOn: ['clean', 'testClasses']) {
     def testPackages = sourceSets['test'].java.srcDirs.stream()
             .flatMap {
-                dir -> Files.walk(dir.toPath())
-                            .map { it.toFile() }
-                            .filter { it.isDirectory() }
-                            .map { it.path }
-                            .map { it.substring(dir.path.length()) }
-            }
-            .filter { !it.isEmpty() }
+        dir -> Files.walk(dir.toPath())
+                .map { it.toFile() }
+                .filter { it.isDirectory() }
+                .map { it.path }
+                .map { it.substring(dir.path.length()) }
+    }
+    .filter { !it.isEmpty() }
             .map { it.substring(1) }
             .map { it.replace('/', '.').replace('\\', '.') }
             .collect(Collectors.toList())

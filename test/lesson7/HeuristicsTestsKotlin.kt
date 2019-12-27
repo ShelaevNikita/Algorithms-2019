@@ -12,7 +12,7 @@ class HeuristicsTestsKotlin : AbstractHeuristicsTests() {
     @Tag("Impossible")
     fun testFillKnapsackCompareWithGreedyTest() {
         fillKnapsackCompareWithGreedyTest { load, items ->
-            fillKnapsackHeuristics(load, items, 20, 1000)
+            fillKnapsackHeuristics(load, items, 50, 100)
         }
     }
 

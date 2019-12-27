@@ -1,4 +1,4 @@
-package lesson7.geneticKnapsack
+package lesson7.heuristicKnapsack
 
 import lesson6.knapsack.Fill
 import lesson6.knapsack.Item

@@ -8,11 +8,10 @@ class HeuristicsTestsKotlin : AbstractHeuristicsTests() {
 
     @Ignore
     @Test
-    // This test is too long for "kotoed" - 9 минут
     @Tag("Impossible")
     fun testFillKnapsackCompareWithGreedyTest() {
         fillKnapsackCompareWithGreedyTest { load, items ->
-            fillKnapsackHeuristics(load, items, 50, 100)
+            fillKnapsackHeuristicsGenetic(load, items, 50, 100)
         }
     }
 
@@ -20,7 +19,7 @@ class HeuristicsTestsKotlin : AbstractHeuristicsTests() {
     @Tag("Impossible")
     fun testFillKnapsackCompareWithGreedyTest2() {
         fillKnapsackCompareWithGreedyTest2 { load, items ->
-            fillKnapsackHeuristics(load, items, 500, 500)
+            fillKnapsackHeuristicsGenetic(load, items, 500, 500)
         }
     }
 
@@ -28,7 +27,32 @@ class HeuristicsTestsKotlin : AbstractHeuristicsTests() {
     @Tag("Impossible")
     fun testFillKnapsackCompareWithDinamicTest() {
         fillKnapsackCompareWithDimanicTest { load, items ->
-            fillKnapsackHeuristics(load, items, 500, 1000)
+            fillKnapsackHeuristicsGenetic(load, items, 500, 1000)
+        }
+    }
+
+    @Ignore
+    @Test
+    @Tag("Impossible")
+    fun testFillKnapsackCompareWithGreedyTest3() {
+        fillKnapsackCompareWithGreedyTest3 { load, items ->
+            fillKnapsackHeuristicsAnnealing(load, items, 500000, 100000)
+        }
+    }
+
+    @Test
+    @Tag("Impossible")
+    fun testFillKnapsackCompareWithGreedyTest4() {
+        fillKnapsackCompareWithGreedyTest4 { load, items ->
+            fillKnapsackHeuristicsAnnealing(load, items, 5000000, 200000)
+        }
+    }
+
+    @Test
+    @Tag("Impossible")
+    fun testFillKnapsackCompareWithDinamicTest2() {
+        fillKnapsackCompareWithDimanicTest2 { load, items ->
+            fillKnapsackHeuristicsAnnealing(load, items, 5000000, 200000)
         }
     }
 

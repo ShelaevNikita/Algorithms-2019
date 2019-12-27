@@ -1,4 +1,4 @@
-package lesson7.geneticKnapsack
+package lesson7.heuristicKnapsack
 
 import kotlin.random.Random
 

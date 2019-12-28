@@ -56,24 +56,26 @@ class AnnealingKnapsack(
     fun findTheBest(): Fill {
         val state = mutableListOf<Int>()
         for (x in 0 until size) state.add(random.nextInt(2))
+        var max = 0
         for (i in 1..iterationNumber) {
             val newState = state.generateNewState()
             val evaluation = state.evaluation()
             val newEvaluation = newState.evaluation()
-            if (newEvaluation > evaluation) {
+            max = maxOf(max, evaluation)
+            if (newEvaluation > max) {
+                max = newEvaluation
                 state.clear()
                 for (x in newState)
                     state.add(x)
-                if (random.nextDouble() >
-                    transitionProbability(
-                        evaluation - newEvaluation,
-                        startTemperature.toDouble() / i
-                    )
-                ) {
-                    state.clear()
-                    for (x in newState)
-                        state.add(x)
-                }
+            } else if (random.nextDouble() >
+                transitionProbability(
+                    newEvaluation - max,
+                    startTemperature.toDouble() / i
+                )
+            ) {
+                state.clear()
+                for (x in newState)
+                    state.add(x)
             }
         }
         val listResult = mutableSetOf<Item>()
